@@ -1,0 +1,618 @@
+<!doctype html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CLAUDE.md軽量化スニペット50選</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet"><style>
+:root{--brand:#D9774F;--brand-deep:#C15640;--brand-soft:rgba(217,119,79,.12);--accent:#D9774F;--accent-deep:#B24E33;
+--bg:#F1ECE3;--paper:#FBF8F2;--ink:#2A2620;--ink-mid:#6E6557;--line:#E4D9C7;--head:'M PLUS Rounded 1c';}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'Noto Sans JP',-apple-system,'Hiragino Sans',sans-serif;line-height:1.7;}
+.wrap{max-width:960px;margin:0 auto;background:var(--paper);min-height:100vh;}
+header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:2px solid var(--brand);padding:16px 28px;}
+header .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+header img{width:40px;height:40px;border-radius:50%;border:2px solid var(--paper);box-shadow:0 2px 8px rgba(0,0,0,.14);}
+header .ttl{font-family:var(--head);font-weight:900;font-size:20px;color:var(--brand-deep);line-height:1.2;}
+header .ttl small{display:block;font-size:12px;color:var(--ink-mid);font-weight:500;}
+.badge{display:inline-block;background:var(--brand);color:#fff;font-family:var(--head);font-weight:900;font-size:13px;border-radius:999px;padding:4px 14px;}
+main{padding:24px 28px 60px;}
+.hero{padding:34px 0 22px;text-align:center;}
+.hero h1{font-family:var(--head);font-weight:900;font-size:30px;color:var(--brand-deep);line-height:1.3;margin-bottom:10px;}
+.hero p{font-size:15px;color:var(--ink-mid);max-width:660px;margin:0 auto;}
+.pcard{display:flex;align-items:center;gap:16px;background:var(--paper);border:1.5px solid var(--line);border-left:5px solid var(--brand);
+border-radius:16px;padding:18px 20px;margin:14px 0;text-decoration:none;color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.05);transition:.15s;}
+.pcard:hover{border-color:var(--brand);transform:translateY(-2px);}
+.pemoji{flex-shrink:0;line-height:0;}
+.pbody{flex:1;}.pt{font-family:var(--head);font-weight:900;font-size:18px;color:var(--ink);}
+.pd{font-size:13.5px;color:var(--ink-mid);margin-top:3px;}
+.pright{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
+.parr{font-family:var(--head);font-weight:900;color:var(--brand-deep);font-size:14px;}
+h2.cat{font-family:var(--head);font-weight:900;font-size:22px;color:var(--ink);margin:36px 0 14px;padding-left:12px;border-left:5px solid var(--brand);}
+.lead{font-size:15px;color:var(--ink-mid);margin-bottom:16px;}
+.icard{background:var(--paper);border:1.5px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.ititle{font-family:var(--head);font-weight:900;font-size:16px;color:var(--ink);margin-bottom:5px;}
+.imeta{font-size:13px;color:var(--ink-mid);margin-bottom:10px;}
+pre.prompt{background:var(--ink);color:#ECECEA;border-radius:10px;padding:14px 16px;white-space:pre-wrap;word-break:break-word;
+font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.6;max-height:320px;overflow-y:auto;margin-bottom:10px;}
+.cbtns{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent);border:2px solid var(--brand);color:var(--ink);
+border-radius:999px;padding:8px 18px;font-weight:900;font-size:14px;cursor:pointer;text-decoration:none;font-family:'Noto Sans JP';}
+.btn.ghost{background:var(--paper);border:1.5px solid var(--line);color:var(--brand-deep);}
+.btn.sm{padding:6px 14px;font-size:13px;}
+.pnote{margin:24px 0;padding:16px 20px;background:var(--brand-soft);border:1.5px solid var(--brand);border-radius:14px;font-size:14px;color:var(--ink);}
+footer{padding:26px 0;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-mid);text-align:center;margin-top:10px;}
+footer a{color:var(--brand-deep);}
+@media(max-width:600px){main{padding:18px 16px 50px;}header{padding:12px 16px;}.pcard{padding:14px;}.hero{padding:24px 0 14px;}.hero h1{font-size:24px;}}
+</style></head><body><div class="wrap">
+<header><div class="top">
+<img src="data:image/png;base64,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" alt="ClaudeCodeチャンネル">
+<div class="ttl">CLAUDE.md軽量化スニペット50選<small>ClaudeCodeチャンネル・プレゼント</small></div>
+<span class="badge">50選</span>
+<div style="margin-left:auto;display:flex;gap:8px;"><a class="btn sm ghost" href="./present.html">← 一覧へ</a><button class="btn sm" onclick="downloadText('pfull','claude-md-snippet.md', this)">⬇ 全件ダウンロード</button></div>
+</div></header>
+<main>
+<p class="lead">全50項目。各カードのボタンから個別にコピー、上部から全件ダウンロードできます。</p>
+<h2 class="cat">カテゴリ1: 冗長な出力を減らす</h2><div class="icard">
+<div class="ititle">1. 前提: コマンド実行の出力が長く、毎回大量にコンテキストへ積まれてしまう場面。</div>
+<div class="imeta">通し番号 1 / 50</div>
+<pre class="prompt" id="p1">前提: コマンド実行の出力が長く、毎回大量にコンテキストへ積まれてしまう場面。
+スニペット: ビルド・テストコマンドは必ず --quiet や -s 等の静音フラグを付けて実行する。詳細ログが必要な場合のみフラグを外す。
+効果: 冗長なビルドログを毎回読み込まずに済み、出力トークンを大きく削減できる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p1', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p1','claude-md-snippet-1.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">2. 前提: git系コマンドの出力が長く読みにくい場面。</div>
+<div class="imeta">通し番号 2 / 50</div>
+<pre class="prompt" id="p2">前提: git系コマンドの出力が長く読みにくい場面。
+スニペット: git logは --oneline、git diffは対象ファイルを明示して実行する。全履歴・全差分を無指定で叩かない。
+効果: 不要な差分・履歴の読み込みを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p2', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p2','claude-md-snippet-2.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">3. 前提: 大きなファイルを都度全文読んでしまう場面。</div>
+<div class="imeta">通し番号 3 / 50</div>
+<pre class="prompt" id="p3">前提: 大きなファイルを都度全文読んでしまう場面。
+スニペット: 100行を超えるファイルは、まず該当箇所をgrepで特定してから該当範囲だけReadする。
+効果: ファイル全文の読み込みコストを、必要な範囲だけに絞れる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p3', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p3','claude-md-snippet-3.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">4. 前提: 同じ確認作業を繰り返し行っている場面。</div>
+<div class="imeta">通し番号 4 / 50</div>
+<pre class="prompt" id="p4">前提: 同じ確認作業を繰り返し行っている場面。
+スニペット: 型チェック・リントは変更したファイルのみを対象に実行する。プロジェクト全体のフルチェックは明示的に頼まれた時だけ行う。
+効果: 無関係なファイルの警告出力を毎回読まずに済む。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p4', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p4','claude-md-snippet-4.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">5. 前提: 長いスタックトレースがそのままコンテキストに残ってしまう場面。</div>
+<div class="imeta">通し番号 5 / 50</div>
+<pre class="prompt" id="p5">前提: 長いスタックトレースがそのままコンテキストに残ってしまう場面。
+スニペット: エラー発生時は、スタックトレースの最初の5行と該当ファイル箇所だけを報告し、全文は省略する。
+効果: 冗長なスタックトレースの出力トークンを削減できる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p5', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p5','claude-md-snippet-5.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">6. 前提: パッケージインストールのログが毎回大量に出る場面。</div>
+<div class="imeta">通し番号 6 / 50</div>
+<pre class="prompt" id="p6">前提: パッケージインストールのログが毎回大量に出る場面。
+スニペット: パッケージのインストール・更新コマンドは --silent 相当のフラグを付けて実行する。
+効果: インストール進捗ログの読み込みを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p6', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p6','claude-md-snippet-6.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">7. 前提: 確認のたびに同じ長い説明を書いてしまう場面。</div>
+<div class="imeta">通し番号 7 / 50</div>
+<pre class="prompt" id="p7">前提: 確認のたびに同じ長い説明を書いてしまう場面。
+スニペット: 作業完了の報告は3行以内。詳細が必要な場合のみ、聞かれたら答える。
+効果: 冗長な報告文自体の出力トークンを削減できる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p7', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p7','claude-md-snippet-7.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">8. 前提: 検索結果が大量にヒットしてすべて出力されてしまう場面。</div>
+<div class="imeta">通し番号 8 / 50</div>
+<pre class="prompt" id="p8">前提: 検索結果が大量にヒットしてすべて出力されてしまう場面。
+スニペット: grep・検索系コマンドは対象ディレクトリを絞り、結果は先頭20件程度に制限して確認する。
+効果: 無関係なヒットを大量に読み込むことを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p8', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p8','claude-md-snippet-8.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">9. 前提: 同じ内容を何度も要約させてしまう場面。</div>
+<div class="imeta">通し番号 9 / 50</div>
+<pre class="prompt" id="p9">前提: 同じ内容を何度も要約させてしまう場面。
+スニペット: 一度要約した内容は再要約せず、既存の要約を再利用する。
+効果: 同じ情報の再生成コストを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p9', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p9','claude-md-snippet-9.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">10. 前提: デバッグ用の一時的なログ出力が残ってしまう場面。</div>
+<div class="imeta">通し番号 10 / 50</div>
+<pre class="prompt" id="p10">前提: デバッグ用の一時的なログ出力が残ってしまう場面。
+スニペット: デバッグ目的で追加したconsole.log等は、タスク完了前に必ず削除する。
+効果: 後続セッションで不要なログ出力を読み込まずに済む。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p10', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p10','claude-md-snippet-10.md', this)">⬇ ダウンロード</button></div>
+</div><h2 class="cat">カテゴリ2: 読み込み範囲を絞る</h2><div class="icard">
+<div class="ititle">11. 前提: プロジェクト全体を毎回探索してしまう場面。</div>
+<div class="imeta">通し番号 11 / 50</div>
+<pre class="prompt" id="p11">前提: プロジェクト全体を毎回探索してしまう場面。
+スニペット: よく使うディレクトリ構成をここに書く: src/（本体）docs/（ドキュメント）tests/（テスト）。まずここから探す。
+効果: ファイル探索のための試行錯誤を減らせる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p11', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p11','claude-md-snippet-11.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">12. 前提: 依存関係のあるファイルを都度探しに行ってしまう場面。</div>
+<div class="imeta">通し番号 12 / 50</div>
+<pre class="prompt" id="p12">前提: 依存関係のあるファイルを都度探しに行ってしまう場面。
+スニペット: 主要なエントリーポイントのパスをここに列挙する。まずここから読み始める。
+効果: エントリーポイント探しの往復を省略できる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p12', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p12','claude-md-snippet-12.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">13. 前提: テスト対象を探すのに時間がかかる場面。</div>
+<div class="imeta">通し番号 13 / 50</div>
+<pre class="prompt" id="p13">前提: テスト対象を探すのに時間がかかる場面。
+スニペット: テストファイルの命名規則と配置場所をここに書く（例: *.test.ts はsrc内の対象ファイルと同じディレクトリ）。
+効果: テストファイルの場所を探す試行錯誤を避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p13', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p13','claude-md-snippet-13.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">14. 前提: 生成物・ビルド成果物を誤って読み込んでしまう場面。</div>
+<div class="imeta">通し番号 14 / 50</div>
+<pre class="prompt" id="p14">前提: 生成物・ビルド成果物を誤って読み込んでしまう場面。
+スニペット: dist/ build/ node_modules/ 等の生成物ディレクトリは読み込み・編集の対象外とする。
+効果: 無関係な生成物の読み込みを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p14', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p14','claude-md-snippet-14.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">15. 前提: 大きな画像・バイナリファイルを誤って開こうとしてしまう場面。</div>
+<div class="imeta">通し番号 15 / 50</div>
+<pre class="prompt" id="p15">前提: 大きな画像・バイナリファイルを誤って開こうとしてしまう場面。
+スニペット: assets/ 配下のバイナリファイルは内容を読まず、ファイル名と用途の一覧をここに書いておく。
+効果: 読み込み不可能なファイルへの無駄なアクセスを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p15', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p15','claude-md-snippet-15.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">16. 前提: 古いドキュメントを最新情報だと誤読してしまう場面。</div>
+<div class="imeta">通し番号 16 / 50</div>
+<pre class="prompt" id="p16">前提: 古いドキュメントを最新情報だと誤読してしまう場面。
+スニペット: docs/legacy/ 配下は参照禁止（廃止済み情報）。最新情報は docs/current/ を参照する。
+効果: 古い情報の読み込み・誤参照を避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p16', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p16','claude-md-snippet-16.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">17. 前提: 設定ファイルの場所を毎回探してしまう場面。</div>
+<div class="imeta">通し番号 17 / 50</div>
+<pre class="prompt" id="p17">前提: 設定ファイルの場所を毎回探してしまう場面。
+スニペット: 環境設定は config/ 配下に集約されている。個別ファイルへの直接編集ではなくここを起点に探す。
+効果: 設定ファイル探索の試行錯誤を避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p17', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p17','claude-md-snippet-17.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">18. 前提: 巨大なログファイルを丸ごと読んでしまう場面。</div>
+<div class="imeta">通し番号 18 / 50</div>
+<pre class="prompt" id="p18">前提: 巨大なログファイルを丸ごと読んでしまう場面。
+スニペット: ログファイルはtailで直近100行のみ確認する。全文を読む必要がある場合のみ明示的に頼む。
+効果: 巨大ログファイルの全文読み込みを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p18', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p18','claude-md-snippet-18.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">19. 前提: サブモジュール・外部リポジトリを誤って探索してしまう場面。</div>
+<div class="imeta">通し番号 19 / 50</div>
+<pre class="prompt" id="p19">前提: サブモジュール・外部リポジトリを誤って探索してしまう場面。
+スニペット: vendor/ や外部サブモジュール配下は編集対象外。参照のみ必要な場合も最小限に留める。
+効果: 無関係な外部コードの読み込みを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p19', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p19','claude-md-snippet-19.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">20. 前提: 複数存在する類似ファイルのどれが本物か迷ってしまう場面。</div>
+<div class="imeta">通し番号 20 / 50</div>
+<pre class="prompt" id="p20">前提: 複数存在する類似ファイルのどれが本物か迷ってしまう場面。
+スニペット: 同名ファイルが複数ある場合、正とするパスをここに明記する（例: 設定は config/prod.yaml が正）。
+効果: 誤ったファイルを読んで手戻りするコストを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p20', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p20','claude-md-snippet-20.md', this)">⬇ ダウンロード</button></div>
+</div><h2 class="cat">カテゴリ3: ツール・MCP呼び出しを減らす</h2><div class="icard">
+<div class="ititle">21. 前提: 使わないMCPサーバーが毎回読み込まれてしまう場面。</div>
+<div class="imeta">通し番号 21 / 50</div>
+<pre class="prompt" id="p21">前提: 使わないMCPサーバーが毎回読み込まれてしまう場面。
+スニペット: このプロジェクトで実際に使うMCPサーバーは〇〇のみ。それ以外は/mcpで無効化してから作業する。
+効果: 未使用MCPのツール定義がコンテキストを圧迫するのを防げる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p21', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p21','claude-md-snippet-21.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">22. 前提: 同じ情報を複数のツールで重複確認してしまう場面。</div>
+<div class="imeta">通し番号 22 / 50</div>
+<pre class="prompt" id="p22">前提: 同じ情報を複数のツールで重複確認してしまう場面。
+スニペット: ファイルの存在確認はまずlsで済ませ、Readは中身が必要な時だけ使う。
+効果: 不要なツール呼び出しの往復を減らせる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p22', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p22','claude-md-snippet-22.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">23. 前提: 小さな修正のたびに新しいサブエージェントを立てすぎてしまう場面。</div>
+<div class="imeta">通し番号 23 / 50</div>
+<pre class="prompt" id="p23">前提: 小さな修正のたびに新しいサブエージェントを立てすぎてしまう場面。
+スニペット: 数行の修正はメインセッションで直接行う。サブエージェントは規模の大きいタスクにのみ使う。
+効果: 小さすぎるタスクでのコンテキスト分離コストを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p23', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p23','claude-md-snippet-23.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">24. 前提: ブラウザ操作ツールを不必要に多用してしまう場面。</div>
+<div class="imeta">通し番号 24 / 50</div>
+<pre class="prompt" id="p24">前提: ブラウザ操作ツールを不必要に多用してしまう場面。
+スニペット: 確認できる情報はまずWebFetch/検索で済ませ、実際の操作が必要な場合のみブラウザツールを使う。
+効果: 重いブラウザ操作の呼び出し回数を減らせる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p24', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p24','claude-md-snippet-24.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">25. 前提: 同じコマンドを何度も個別に実行してしまう場面。</div>
+<div class="imeta">通し番号 25 / 50</div>
+<pre class="prompt" id="p25">前提: 同じコマンドを何度も個別に実行してしまう場面。
+スニペット: 独立して実行できる複数のコマンドは、可能な限りまとめて1回で実行する。
+効果: ツール呼び出しのラウンドトリップ回数を減らせる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p25', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p25','claude-md-snippet-25.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">26. 前提: 外部APIへの問い合わせを繰り返してしまう場面。</div>
+<div class="imeta">通し番号 26 / 50</div>
+<pre class="prompt" id="p26">前提: 外部APIへの問い合わせを繰り返してしまう場面。
+スニペット: 一度取得した外部情報はこのセッション内で再利用し、同じ問い合わせを繰り返さない。
+効果: 重複した外部呼び出しのコストを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p26', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p26','claude-md-snippet-26.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">27. 前提: 型定義やドキュメントを毎回Web検索してしまう場面。</div>
+<div class="imeta">通し番号 27 / 50</div>
+<pre class="prompt" id="p27">前提: 型定義やドキュメントを毎回Web検索してしまう場面。
+スニペット: 主要ライブラリのバージョンと参照すべきドキュメントURLをここに書いておく。
+効果: 毎回の検索を省略し、直接参照できる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p27', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p27','claude-md-snippet-27.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">28. 前提: 不要な権限確認が繰り返し発生してしまう場面。</div>
+<div class="imeta">通し番号 28 / 50</div>
+<pre class="prompt" id="p28">前提: 不要な権限確認が繰り返し発生してしまう場面。
+スニペット: 読み取り専用の確認作業（lsやgit status等）はask対象から外し、書き込み系のみ確認する。
+効果: 確認のための往復を減らし、作業がスムーズに進む。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p28', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p28','claude-md-snippet-28.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">29. 前提: 同じテストを何度も個別実行してしまう場面。</div>
+<div class="imeta">通し番号 29 / 50</div>
+<pre class="prompt" id="p29">前提: 同じテストを何度も個別実行してしまう場面。
+スニペット: 関連するテストはまとめて一度に実行し、個別ファイルずつの実行は避ける。
+効果: テスト実行のツール呼び出し回数を減らせる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p29', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p29','claude-md-snippet-29.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">30. 前提: 使っていないツール・スキルが毎回ロードされてしまう場面。</div>
+<div class="imeta">通し番号 30 / 50</div>
+<pre class="prompt" id="p30">前提: 使っていないツール・スキルが毎回ロードされてしまう場面。
+スニペット: このプロジェクトで日常的に使うスキルは〇〇のみ。それ以外は都度検索して使う運用にする。
+効果: 常時ロードされる定義を最小限に抑えられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p30', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p30','claude-md-snippet-30.md', this)">⬇ ダウンロード</button></div>
+</div><h2 class="cat">カテゴリ4: フォーマット・構造で圧縮する</h2><div class="icard">
+<div class="ititle">31. 前提: CLAUDE.md自体が長文の説明文で肥大化している場面。</div>
+<div class="imeta">通し番号 31 / 50</div>
+<pre class="prompt" id="p31">前提: CLAUDE.md自体が長文の説明文で肥大化している場面。
+スニペット: ルールは1行1ルールの箇条書きで書く。背景説明が必要な場合のみ短い注釈を添える。
+効果: 同じ内容でも文章より箇条書きの方が短いトークン数で伝わる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p31', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p31','claude-md-snippet-31.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">32. 前提: 同じルールを複数箇所に重複して書いてしまっている場面。</div>
+<div class="imeta">通し番号 32 / 50</div>
+<pre class="prompt" id="p32">前提: 同じルールを複数箇所に重複して書いてしまっている場面。
+スニペット: 共通ルールは1箇所にまとめ、他のセクションからは参照するだけにする（重複させない）。
+効果: 同じ内容を毎回二重に読み込むコストを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p32', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p32','claude-md-snippet-32.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">33. 前提: 具体例を長々と書いてしまっている場面。</div>
+<div class="imeta">通し番号 33 / 50</div>
+<pre class="prompt" id="p33">前提: 具体例を長々と書いてしまっている場面。
+スニペット: 具体例は最小限の1つだけ。網羅的な例の列挙はしない。
+効果: 例の列挙による肥大化を防げる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p33', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p33','claude-md-snippet-33.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">34. 前提: すでに標準的な挙動をわざわざ明記してしまっている場面。</div>
+<div class="imeta">通し番号 34 / 50</div>
+<pre class="prompt" id="p34">前提: すでに標準的な挙動をわざわざ明記してしまっている場面。
+スニペット: モデルの既定動作と同じ内容のルールは書かない（既定で守られることは書かなくてよい）。
+効果: 冗長な自明ルールの記載を削減できる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p34', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p34','claude-md-snippet-34.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">35. 前提: 古くなったルールが残り続けている場面。</div>
+<div class="imeta">通し番号 35 / 50</div>
+<pre class="prompt" id="p35">前提: 古くなったルールが残り続けている場面。
+スニペット: ルールには追加日を書き、3ヶ月ごとに不要になったものが無いか見直す。
+効果: 陳腐化したルールの蓄積を防げる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p35', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p35','claude-md-snippet-35.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">36. 前提: プロジェクト固有ルールと個人の好みが混在している場面。</div>
+<div class="imeta">通し番号 36 / 50</div>
+<pre class="prompt" id="p36">前提: プロジェクト固有ルールと個人の好みが混在している場面。
+スニペット: プロジェクト固有のルールはプロジェクト直下のCLAUDE.mdに、個人の好みは~/.claude/CLAUDE.mdに分けて書く。
+効果: プロジェクトごとに不要な個人ルールを読み込まずに済む。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p36', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p36','claude-md-snippet-36.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">37. 前提: 長い注意書き・免責事項を毎回書いてしまう場面。</div>
+<div class="imeta">通し番号 37 / 50</div>
+<pre class="prompt" id="p37">前提: 長い注意書き・免責事項を毎回書いてしまう場面。
+スニペット: 注意書きは核心の1文に絞る。理由の説明は別ファイル（docs等）にリンクで逃がす。
+効果: 毎回読み込まれる本文を短く保てる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p37', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p37','claude-md-snippet-37.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">38. 前提: テーブル形式で書くべき情報を文章で書いてしまっている場面。</div>
+<div class="imeta">通し番号 38 / 50</div>
+<pre class="prompt" id="p38">前提: テーブル形式で書くべき情報を文章で書いてしまっている場面。
+スニペット: 対応表・比較情報は文章ではなく簡潔な箇条書きの対応関係で書く。
+効果: 同じ情報量でも簡潔な形式の方がトークン効率が良い。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p38', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p38','claude-md-snippet-38.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">39. 前提: セクションが増えすぎて全体像が見えにくくなっている場面。</div>
+<div class="imeta">通し番号 39 / 50</div>
+<pre class="prompt" id="p39">前提: セクションが増えすぎて全体像が見えにくくなっている場面。
+スニペット: セクションは大分類で5〜7個までに抑え、それ以上は別ファイルに分割してこのファイルからリンクする。
+効果: 本当に必要なセクションだけを軽量に保てる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p39', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p39','claude-md-snippet-39.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">40. 前提: 同じ意味のルールを異なる言い回しで何度も書いてしまう場面。</div>
+<div class="imeta">通し番号 40 / 50</div>
+<pre class="prompt" id="p40">前提: 同じ意味のルールを異なる言い回しで何度も書いてしまう場面。
+スニペット: 新しいルールを追加する前に、既存ルールと意味が重複していないか確認する。
+効果: 意味の重複した記述を防ぎ、全体を軽量に保てる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p40', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p40','claude-md-snippet-40.md', this)">⬇ ダウンロード</button></div>
+</div><h2 class="cat">カテゴリ5: セッション運用ルール</h2><div class="icard">
+<div class="ititle">41. 前提: 無関係な話題に切り替わってもコンテキストを引きずってしまう場面。</div>
+<div class="imeta">通し番号 41 / 50</div>
+<pre class="prompt" id="p41">前提: 無関係な話題に切り替わってもコンテキストを引きずってしまう場面。
+スニペット: 話題が大きく変わるときは/clearしてから始める。
+効果: 無関係な過去のやり取りを毎ターン送り直すコストを避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p41', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p41','claude-md-snippet-41.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">42. 前提: 長時間セッションでコンテキストが肥大化してしまう場面。</div>
+<div class="imeta">通し番号 42 / 50</div>
+<pre class="prompt" id="p42">前提: 長時間セッションでコンテキストが肥大化してしまう場面。
+スニペット: 作業を中断する前や大きな区切りごとに/compactを実行する。
+効果: 肥大化したコンテキストを圧縮し、以降のコストを抑えられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p42', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p42','claude-md-snippet-42.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">43. 前提: 手戻りが発生してもそのまま会話を続けてしまう場面。</div>
+<div class="imeta">通し番号 43 / 50</div>
+<pre class="prompt" id="p43">前提: 手戻りが発生してもそのまま会話を続けてしまう場面。
+スニペット: 直近のやり取りが不要になった場合は/rewindで巻き戻してから続きを進める。
+効果: 不要なターンを圧縮より低コストで取り除ける。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p43', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p43','claude-md-snippet-43.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">44. 前提: セッション開始時に何が読み込まれているか把握していない場面。</div>
+<div class="imeta">通し番号 44 / 50</div>
+<pre class="prompt" id="p44">前提: セッション開始時に何が読み込まれているか把握していない場面。
+スニペット: セッション開始時に一度/contextを実行し、不要な読み込みが無いか確認する。
+効果: 無駄な読み込みに早い段階で気づける。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p44', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p44','claude-md-snippet-44.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">45. 前提: モデルやeffortを作業途中で頻繁に変えてしまう場面。</div>
+<div class="imeta">通し番号 45 / 50</div>
+<pre class="prompt" id="p45">前提: モデルやeffortを作業途中で頻繁に変えてしまう場面。
+スニペット: モデルとeffortはセッション開始時に決め、途中では変更しない。
+効果: キャッシュの失効によるコスト増を避けられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p45', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p45','claude-md-snippet-45.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">46. 前提: サブエージェントの結果を都度メインに全文貼り付けてしまう場面。</div>
+<div class="imeta">通し番号 46 / 50</div>
+<pre class="prompt" id="p46">前提: サブエージェントの結果を都度メインに全文貼り付けてしまう場面。
+スニペット: サブエージェントの結果は要点のみメインセッションに戻す。全文が必要な場合のみ別途確認する。
+効果: サブエージェントの詳細な作業ログを二重に読み込まずに済む。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p46', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p46','claude-md-snippet-46.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">47. 前提: 同じセッションを長く使い続けて肥大化させてしまう場面。</div>
+<div class="imeta">通し番号 47 / 50</div>
+<pre class="prompt" id="p47">前提: 同じセッションを長く使い続けて肥大化させてしまう場面。
+スニペット: 目的が完了したタスクの続きは、新しいセッションで/recap相当の要約から始める。
+効果: 全会話を読み直すより短いコストで作業を再開できる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p47', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p47','claude-md-snippet-47.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">48. 前提: 並行作業のために複数セッションを立てすぎてしまう場面。</div>
+<div class="imeta">通し番号 48 / 50</div>
+<pre class="prompt" id="p48">前提: 並行作業のために複数セッションを立てすぎてしまう場面。
+スニペット: 関連性の高いタスクは同じセッション内でまとめて進め、無関係なタスクだけ別セッションに分ける。
+効果: セッションをまたぐたびに発生する初期化コストを抑えられる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p48', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p48','claude-md-snippet-48.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">49. 前提: バックグラウンドタスクの状態を都度確認しに行ってしまう場面。</div>
+<div class="imeta">通し番号 49 / 50</div>
+<pre class="prompt" id="p49">前提: バックグラウンドタスクの状態を都度確認しに行ってしまう場面。
+スニペット: バックグラウンドで実行中のタスクは、完了時に自動で報告させ、こちらから毎回聞きに行かない。
+効果: 状態確認のための無駄な呼び出しを減らせる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p49', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p49','claude-md-snippet-49.md', this)">⬇ ダウンロード</button></div>
+</div><div class="icard">
+<div class="ititle">50. 前提: 長時間タスクが制限に達して中断した後、状況把握からやり直してしまう場面。</div>
+<div class="imeta">通し番号 50 / 50</div>
+<pre class="prompt" id="p50">前提: 長時間タスクが制限に達して中断した後、状況把握からやり直してしまう場面。
+スニペット: 長時間タスクの節目ごとに、これまでの進捗を短く記録してから次に進む。
+効果: 中断・再開のたびに全履歴を読み直さず、記録した進捗から再開できる。</pre>
+<div class="cbtns"><button class="btn sm" onclick="copyPrompt('p50', this)">📋 コピー</button><button class="btn sm ghost" onclick="downloadText('p50','claude-md-snippet-50.md', this)">⬇ ダウンロード</button></div>
+</div>
+</main>
+<pre id="pfull" class="hidden" style="display:none;">1. 前提: コマンド実行の出力が長く、毎回大量にコンテキストへ積まれてしまう場面。
+スニペット: ビルド・テストコマンドは必ず --quiet や -s 等の静音フラグを付けて実行する。詳細ログが必要な場合のみフラグを外す。
+効果: 冗長なビルドログを毎回読み込まずに済み、出力トークンを大きく削減できる。
+
+2. 前提: git系コマンドの出力が長く読みにくい場面。
+スニペット: git logは --oneline、git diffは対象ファイルを明示して実行する。全履歴・全差分を無指定で叩かない。
+効果: 不要な差分・履歴の読み込みを避けられる。
+
+3. 前提: 大きなファイルを都度全文読んでしまう場面。
+スニペット: 100行を超えるファイルは、まず該当箇所をgrepで特定してから該当範囲だけReadする。
+効果: ファイル全文の読み込みコストを、必要な範囲だけに絞れる。
+
+4. 前提: 同じ確認作業を繰り返し行っている場面。
+スニペット: 型チェック・リントは変更したファイルのみを対象に実行する。プロジェクト全体のフルチェックは明示的に頼まれた時だけ行う。
+効果: 無関係なファイルの警告出力を毎回読まずに済む。
+
+5. 前提: 長いスタックトレースがそのままコンテキストに残ってしまう場面。
+スニペット: エラー発生時は、スタックトレースの最初の5行と該当ファイル箇所だけを報告し、全文は省略する。
+効果: 冗長なスタックトレースの出力トークンを削減できる。
+
+6. 前提: パッケージインストールのログが毎回大量に出る場面。
+スニペット: パッケージのインストール・更新コマンドは --silent 相当のフラグを付けて実行する。
+効果: インストール進捗ログの読み込みを避けられる。
+
+7. 前提: 確認のたびに同じ長い説明を書いてしまう場面。
+スニペット: 作業完了の報告は3行以内。詳細が必要な場合のみ、聞かれたら答える。
+効果: 冗長な報告文自体の出力トークンを削減できる。
+
+8. 前提: 検索結果が大量にヒットしてすべて出力されてしまう場面。
+スニペット: grep・検索系コマンドは対象ディレクトリを絞り、結果は先頭20件程度に制限して確認する。
+効果: 無関係なヒットを大量に読み込むことを避けられる。
+
+9. 前提: 同じ内容を何度も要約させてしまう場面。
+スニペット: 一度要約した内容は再要約せず、既存の要約を再利用する。
+効果: 同じ情報の再生成コストを避けられる。
+
+10. 前提: デバッグ用の一時的なログ出力が残ってしまう場面。
+スニペット: デバッグ目的で追加したconsole.log等は、タスク完了前に必ず削除する。
+効果: 後続セッションで不要なログ出力を読み込まずに済む。
+
+11. 前提: プロジェクト全体を毎回探索してしまう場面。
+スニペット: よく使うディレクトリ構成をここに書く: src/（本体）docs/（ドキュメント）tests/（テスト）。まずここから探す。
+効果: ファイル探索のための試行錯誤を減らせる。
+
+12. 前提: 依存関係のあるファイルを都度探しに行ってしまう場面。
+スニペット: 主要なエントリーポイントのパスをここに列挙する。まずここから読み始める。
+効果: エントリーポイント探しの往復を省略できる。
+
+13. 前提: テスト対象を探すのに時間がかかる場面。
+スニペット: テストファイルの命名規則と配置場所をここに書く（例: *.test.ts はsrc内の対象ファイルと同じディレクトリ）。
+効果: テストファイルの場所を探す試行錯誤を避けられる。
+
+14. 前提: 生成物・ビルド成果物を誤って読み込んでしまう場面。
+スニペット: dist/ build/ node_modules/ 等の生成物ディレクトリは読み込み・編集の対象外とする。
+効果: 無関係な生成物の読み込みを避けられる。
+
+15. 前提: 大きな画像・バイナリファイルを誤って開こうとしてしまう場面。
+スニペット: assets/ 配下のバイナリファイルは内容を読まず、ファイル名と用途の一覧をここに書いておく。
+効果: 読み込み不可能なファイルへの無駄なアクセスを避けられる。
+
+16. 前提: 古いドキュメントを最新情報だと誤読してしまう場面。
+スニペット: docs/legacy/ 配下は参照禁止（廃止済み情報）。最新情報は docs/current/ を参照する。
+効果: 古い情報の読み込み・誤参照を避けられる。
+
+17. 前提: 設定ファイルの場所を毎回探してしまう場面。
+スニペット: 環境設定は config/ 配下に集約されている。個別ファイルへの直接編集ではなくここを起点に探す。
+効果: 設定ファイル探索の試行錯誤を避けられる。
+
+18. 前提: 巨大なログファイルを丸ごと読んでしまう場面。
+スニペット: ログファイルはtailで直近100行のみ確認する。全文を読む必要がある場合のみ明示的に頼む。
+効果: 巨大ログファイルの全文読み込みを避けられる。
+
+19. 前提: サブモジュール・外部リポジトリを誤って探索してしまう場面。
+スニペット: vendor/ や外部サブモジュール配下は編集対象外。参照のみ必要な場合も最小限に留める。
+効果: 無関係な外部コードの読み込みを避けられる。
+
+20. 前提: 複数存在する類似ファイルのどれが本物か迷ってしまう場面。
+スニペット: 同名ファイルが複数ある場合、正とするパスをここに明記する（例: 設定は config/prod.yaml が正）。
+効果: 誤ったファイルを読んで手戻りするコストを避けられる。
+
+21. 前提: 使わないMCPサーバーが毎回読み込まれてしまう場面。
+スニペット: このプロジェクトで実際に使うMCPサーバーは〇〇のみ。それ以外は/mcpで無効化してから作業する。
+効果: 未使用MCPのツール定義がコンテキストを圧迫するのを防げる。
+
+22. 前提: 同じ情報を複数のツールで重複確認してしまう場面。
+スニペット: ファイルの存在確認はまずlsで済ませ、Readは中身が必要な時だけ使う。
+効果: 不要なツール呼び出しの往復を減らせる。
+
+23. 前提: 小さな修正のたびに新しいサブエージェントを立てすぎてしまう場面。
+スニペット: 数行の修正はメインセッションで直接行う。サブエージェントは規模の大きいタスクにのみ使う。
+効果: 小さすぎるタスクでのコンテキスト分離コストを避けられる。
+
+24. 前提: ブラウザ操作ツールを不必要に多用してしまう場面。
+スニペット: 確認できる情報はまずWebFetch/検索で済ませ、実際の操作が必要な場合のみブラウザツールを使う。
+効果: 重いブラウザ操作の呼び出し回数を減らせる。
+
+25. 前提: 同じコマンドを何度も個別に実行してしまう場面。
+スニペット: 独立して実行できる複数のコマンドは、可能な限りまとめて1回で実行する。
+効果: ツール呼び出しのラウンドトリップ回数を減らせる。
+
+26. 前提: 外部APIへの問い合わせを繰り返してしまう場面。
+スニペット: 一度取得した外部情報はこのセッション内で再利用し、同じ問い合わせを繰り返さない。
+効果: 重複した外部呼び出しのコストを避けられる。
+
+27. 前提: 型定義やドキュメントを毎回Web検索してしまう場面。
+スニペット: 主要ライブラリのバージョンと参照すべきドキュメントURLをここに書いておく。
+効果: 毎回の検索を省略し、直接参照できる。
+
+28. 前提: 不要な権限確認が繰り返し発生してしまう場面。
+スニペット: 読み取り専用の確認作業（lsやgit status等）はask対象から外し、書き込み系のみ確認する。
+効果: 確認のための往復を減らし、作業がスムーズに進む。
+
+29. 前提: 同じテストを何度も個別実行してしまう場面。
+スニペット: 関連するテストはまとめて一度に実行し、個別ファイルずつの実行は避ける。
+効果: テスト実行のツール呼び出し回数を減らせる。
+
+30. 前提: 使っていないツール・スキルが毎回ロードされてしまう場面。
+スニペット: このプロジェクトで日常的に使うスキルは〇〇のみ。それ以外は都度検索して使う運用にする。
+効果: 常時ロードされる定義を最小限に抑えられる。
+
+31. 前提: CLAUDE.md自体が長文の説明文で肥大化している場面。
+スニペット: ルールは1行1ルールの箇条書きで書く。背景説明が必要な場合のみ短い注釈を添える。
+効果: 同じ内容でも文章より箇条書きの方が短いトークン数で伝わる。
+
+32. 前提: 同じルールを複数箇所に重複して書いてしまっている場面。
+スニペット: 共通ルールは1箇所にまとめ、他のセクションからは参照するだけにする（重複させない）。
+効果: 同じ内容を毎回二重に読み込むコストを避けられる。
+
+33. 前提: 具体例を長々と書いてしまっている場面。
+スニペット: 具体例は最小限の1つだけ。網羅的な例の列挙はしない。
+効果: 例の列挙による肥大化を防げる。
+
+34. 前提: すでに標準的な挙動をわざわざ明記してしまっている場面。
+スニペット: モデルの既定動作と同じ内容のルールは書かない（既定で守られることは書かなくてよい）。
+効果: 冗長な自明ルールの記載を削減できる。
+
+35. 前提: 古くなったルールが残り続けている場面。
+スニペット: ルールには追加日を書き、3ヶ月ごとに不要になったものが無いか見直す。
+効果: 陳腐化したルールの蓄積を防げる。
+
+36. 前提: プロジェクト固有ルールと個人の好みが混在している場面。
+スニペット: プロジェクト固有のルールはプロジェクト直下のCLAUDE.mdに、個人の好みは~/.claude/CLAUDE.mdに分けて書く。
+効果: プロジェクトごとに不要な個人ルールを読み込まずに済む。
+
+37. 前提: 長い注意書き・免責事項を毎回書いてしまう場面。
+スニペット: 注意書きは核心の1文に絞る。理由の説明は別ファイル（docs等）にリンクで逃がす。
+効果: 毎回読み込まれる本文を短く保てる。
+
+38. 前提: テーブル形式で書くべき情報を文章で書いてしまっている場面。
+スニペット: 対応表・比較情報は文章ではなく簡潔な箇条書きの対応関係で書く。
+効果: 同じ情報量でも簡潔な形式の方がトークン効率が良い。
+
+39. 前提: セクションが増えすぎて全体像が見えにくくなっている場面。
+スニペット: セクションは大分類で5〜7個までに抑え、それ以上は別ファイルに分割してこのファイルからリンクする。
+効果: 本当に必要なセクションだけを軽量に保てる。
+
+40. 前提: 同じ意味のルールを異なる言い回しで何度も書いてしまう場面。
+スニペット: 新しいルールを追加する前に、既存ルールと意味が重複していないか確認する。
+効果: 意味の重複した記述を防ぎ、全体を軽量に保てる。
+
+41. 前提: 無関係な話題に切り替わってもコンテキストを引きずってしまう場面。
+スニペット: 話題が大きく変わるときは/clearしてから始める。
+効果: 無関係な過去のやり取りを毎ターン送り直すコストを避けられる。
+
+42. 前提: 長時間セッションでコンテキストが肥大化してしまう場面。
+スニペット: 作業を中断する前や大きな区切りごとに/compactを実行する。
+効果: 肥大化したコンテキストを圧縮し、以降のコストを抑えられる。
+
+43. 前提: 手戻りが発生してもそのまま会話を続けてしまう場面。
+スニペット: 直近のやり取りが不要になった場合は/rewindで巻き戻してから続きを進める。
+効果: 不要なターンを圧縮より低コストで取り除ける。
+
+44. 前提: セッション開始時に何が読み込まれているか把握していない場面。
+スニペット: セッション開始時に一度/contextを実行し、不要な読み込みが無いか確認する。
+効果: 無駄な読み込みに早い段階で気づける。
+
+45. 前提: モデルやeffortを作業途中で頻繁に変えてしまう場面。
+スニペット: モデルとeffortはセッション開始時に決め、途中では変更しない。
+効果: キャッシュの失効によるコスト増を避けられる。
+
+46. 前提: サブエージェントの結果を都度メインに全文貼り付けてしまう場面。
+スニペット: サブエージェントの結果は要点のみメインセッションに戻す。全文が必要な場合のみ別途確認する。
+効果: サブエージェントの詳細な作業ログを二重に読み込まずに済む。
+
+47. 前提: 同じセッションを長く使い続けて肥大化させてしまう場面。
+スニペット: 目的が完了したタスクの続きは、新しいセッションで/recap相当の要約から始める。
+効果: 全会話を読み直すより短いコストで作業を再開できる。
+
+48. 前提: 並行作業のために複数セッションを立てすぎてしまう場面。
+スニペット: 関連性の高いタスクは同じセッション内でまとめて進め、無関係なタスクだけ別セッションに分ける。
+効果: セッションをまたぐたびに発生する初期化コストを抑えられる。
+
+49. 前提: バックグラウンドタスクの状態を都度確認しに行ってしまう場面。
+スニペット: バックグラウンドで実行中のタスクは、完了時に自動で報告させ、こちらから毎回聞きに行かない。
+効果: 状態確認のための無駄な呼び出しを減らせる。
+
+50. 前提: 長時間タスクが制限に達して中断した後、状況把握からやり直してしまう場面。
+スニペット: 長時間タスクの節目ごとに、これまでの進捗を短く記録してから次に進む。
+効果: 中断・再開のたびに全履歴を読み直さず、記録した進捗から再開できる。
+
+以上、50個です。内訳は本文末尾のカテゴリ内訳を参照。</pre>
+<footer>ClaudeCodeチャンネル ｜ このプレゼントは自由に使ってください</footer>
+<script>
+function copyTextWithFallback(text){
+  function fb(){try{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
+    const ok=document.execCommand('copy');ta.remove();return ok;}catch(e){return false;}}
+  if(navigator.clipboard&&navigator.clipboard.writeText){return navigator.clipboard.writeText(text).then(()=>true).catch(fb);}
+  return Promise.resolve(fb());
+}
+function showCopyResult(btn,ok){const o=btn.dataset.o||btn.textContent;btn.dataset.o=o;
+  btn.textContent=ok?'✔ コピーしました':'✖ コピー不可 → ⬇をご利用ください';setTimeout(()=>{btn.textContent=o;},ok?1600:3200);}
+async function copyPrompt(id,btn){const ok=await copyTextWithFallback(document.getElementById(id).textContent);showCopyResult(btn,ok);}
+function downloadText(id,fn,btn){try{const t=document.getElementById(id).textContent;const b=new Blob([t],{type:'text/plain;charset=utf-8'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),2000);}catch(e){if(btn){const o=btn.textContent;btn.textContent='✖ 保存不可';setTimeout(()=>{btn.textContent=o;},3000);}}}
+</script>
+</div></body></html>
